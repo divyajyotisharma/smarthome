@@ -1,0 +1,83 @@
+README.md
+  s_2ddd08a1a7c945::t_c67027f7b935e0 1-92
+app/config.py
+  s_46c146ffb4f162::t_240072fb25b272 1-17
+app/db.py
+  s_46c146ffb4f162::t_c0aed245f29c6a 1-45
+app/main.py
+  s_46c146ffb4f162::t_b0aea795254265 1-62
+app/models/__init__.py
+  s_46c146ffb4f162::t_dc3eeb4868dc57 1-5
+app/models/core.py
+  s_46c146ffb4f162::t_e359c6ce1f3846 1-71
+app/routers/__init__.py
+  s_46c146ffb4f162::t_beed1ecd157102 1
+app/routers/collection.py
+  s_46c146ffb4f162::t_02fe945c165471 1-32
+app/routers/homes.py
+  s_46c146ffb4f162::t_e2c646d93dab37 1-21
+app/routers/metrics.py
+  s_46c146ffb4f162::t_f5b6a0bea98534 1-37
+app/routers/reports.py
+  s_46c146ffb4f162::t_0fd6df4bef5e74 1-44
+app/routers/vendors.py
+  s_46c146ffb4f162::t_1c1b4f28473d9b 1-16
+app/scheduler.py
+  s_46c146ffb4f162::t_086911d06ca7ae 1-82
+app/schemas/__init__.py
+  s_46c146ffb4f162::t_80a33f6a151ee6 1-27
+app/services/__init__.py
+  s_46c146ffb4f162::t_62a25358b2db60 1
+app/services/collection.py
+  s_46c146ffb4f162::t_a7f487e658d9bd 1-63
+app/services/metrics.py
+  s_46c146ffb4f162::t_c05eaabd99ed3d 1-67
+app/services/reports.py
+  s_46c146ffb4f162::t_88f33bc895a19d 1-140
+app/services/seed.py
+  s_46c146ffb4f162::t_b943b0c18a83ea 1-104
+app/vendors/__init__.py
+  s_46c146ffb4f162::t_97a54ebb12b932 1
+app/vendors/adapters.py
+  s_46c146ffb4f162::t_bfb50f9bf27a1d 1-134
+app/vendors/registry.py
+  s_46c146ffb4f162::t_f084f512067b07 1-27
+context/features/04-vendor-registry-collection.md
+  s_46c146ffb4f162::t_7a7f34c1191c01 1-273
+context/features/05-historical-metrics.md
+  s_46c146ffb4f162::t_2aaaf6a535ec51 1-231
+context/features/06-reports.md
+  s_46c146ffb4f162::t_0a718089788b29 1-306
+requirements.txt
+  s_46c146ffb4f162::t_15e35dd919cf4a 1-6
+tests/test_collection.py
+  s_46c146ffb4f162::t_e598ec25dcd18c 1-88
+tests/test_metrics.py
+  s_46c146ffb4f162::t_394090bea1ae95 1-83
+tests/test_reports.py
+  s_46c146ffb4f162::t_8f28daa9545080 1-129
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.5",
+  "base_commit_sha": "2dc7fd11739ef5f508ee91133a095c82e74d750e",
+  "prompts": {},
+  "sessions": {
+    "s_2ddd08a1a7c945": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "019f1769-d00a-7f23-bf0a-93fe6359450c",
+        "model": "unknown"
+      },
+      "human_author": "Divy <divysha3@cisco.com>"
+    },
+    "s_46c146ffb4f162": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "019f18c5-a955-76b2-8878-c26b538a7254",
+        "model": "unknown"
+      },
+      "human_author": "Divy <divysha3@cisco.com>"
+    }
+  }
+}
