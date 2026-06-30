@@ -1,0 +1,1 @@
+"""SmartHome FastAPI application package."""
