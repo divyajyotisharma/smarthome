@@ -79,6 +79,7 @@ class MetricReadingResponse(BaseModel):
     metric_reading_id: int
     home_id: int
     appliance_id: int
+    appliance_display_name: str
     vendor: str
     appliance_type: str
     power_watts: float | None

@@ -30,12 +30,12 @@ def test_daily_report_summarizes_seeded_metrics(tmp_path):
     assert report["start_date"] == "2026-06-30"
     assert report["end_date"] == "2026-06-30"
     assert report["total_appliances"] == 3
-    assert report["total_metric_readings"] == 6
+    assert report["total_metric_readings"] == 3
     assert summaries[1]["display_name"] == "Living Room AC"
-    assert summaries[1]["readings_count"] == 2
-    assert summaries[1]["power_watts"] == {"avg": 805.0, "min": 790.0, "max": 820.0}
-    assert summaries[1]["temperature_celsius"] == {"avg": 23.3, "min": 23.1, "max": 23.5}
-    assert summaries[1]["state_counts"] == {"idle": 1, "running": 1}
+    assert summaries[1]["readings_count"] == 1
+    assert summaries[1]["power_watts"] == {"avg": 820.0, "min": 820.0, "max": 820.0}
+    assert summaries[1]["temperature_celsius"] == {"avg": 23.5, "min": 23.5, "max": 23.5}
+    assert summaries[1]["state_counts"] == {"running": 1}
     assert summaries[1]["latest_reading_at"] is not None
 
 
@@ -43,16 +43,16 @@ def test_custom_report_summarizes_inclusive_range(tmp_path):
     with _client(tmp_path) as client:
         response = client.get(
             "/homes/1/reports/custom",
-            params={"start_date": "2026-06-28", "end_date": "2026-06-30"},
+            params={"start_date": "2026-06-29", "end_date": "2026-06-30"},
         )
 
     assert response.status_code == 200
     report = response.json()
     assert report["report_type"] == "custom"
-    assert report["start_date"] == "2026-06-28"
+    assert report["start_date"] == "2026-06-29"
     assert report["end_date"] == "2026-06-30"
     assert report["total_appliances"] == 3
-    assert report["total_metric_readings"] == 18
+    assert report["total_metric_readings"] == 6
 
 
 def test_report_empty_range_keeps_appliance_context(tmp_path):

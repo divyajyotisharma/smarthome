@@ -87,3 +87,9 @@ class MetricReading(Base):
         """Expose an entity-specific identifier for API responses."""
 
         return self.id
+
+    @property
+    def appliance_display_name(self) -> str:
+        """Expose the appliance name alongside historical metric rows."""
+
+        return self.appliance.display_name

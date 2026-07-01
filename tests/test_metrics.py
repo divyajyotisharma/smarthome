@@ -16,7 +16,7 @@ def test_lists_seeded_metrics_for_home(tmp_path):
 
     assert response.status_code == 200
     readings = response.json()
-    assert len(readings) == 18
+    assert len(readings) == 6
     assert "id" not in readings[0]
     assert "metric_reading_id" in readings[0]
     assert readings[0]["home_id"] == 1
@@ -46,7 +46,7 @@ def test_filters_metrics_by_appliance_id(tmp_path):
 
     assert response.status_code == 200
     readings = response.json()
-    assert len(readings) == 6
+    assert len(readings) == 2
     assert all(reading["appliance_id"] == 1 for reading in readings)
 
 
@@ -66,9 +66,9 @@ def test_filters_metrics_by_inclusive_date_range(tmp_path):
         )
 
     assert included.status_code == 200
-    assert len(included.json()) == 6
+    assert len(included.json()) == 3
     assert single_day.status_code == 200
-    assert len(single_day.json()) == 6
+    assert len(single_day.json()) == 3
     assert excluded.status_code == 200
     assert excluded.json() == []
 

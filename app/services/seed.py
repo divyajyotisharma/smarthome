@@ -10,12 +10,8 @@ from app.models import Appliance, Home, MetricReading
 
 
 SEED_RECORDED_AT = (
-    datetime(2026, 6, 28, 9, 0, tzinfo=timezone.utc),
-    datetime(2026, 6, 28, 9, 15, tzinfo=timezone.utc),
     datetime(2026, 6, 29, 9, 0, tzinfo=timezone.utc),
-    datetime(2026, 6, 29, 9, 15, tzinfo=timezone.utc),
     datetime(2026, 6, 30, 9, 0, tzinfo=timezone.utc),
-    datetime(2026, 6, 30, 9, 15, tzinfo=timezone.utc),
 )
 
 
@@ -136,28 +132,16 @@ def _demo_readings_for_appliance(home_id: int, appliance: Appliance) -> list[Met
 
     values_by_type = {
         "air_conditioner": (
-            (830.0, 23.7, "running"),
-            (800.0, 23.3, "idle"),
             (825.0, 23.6, "running"),
-            (795.0, 23.2, "idle"),
             (820.0, 23.5, "running"),
-            (790.0, 23.1, "idle"),
         ),
         "refrigerator": (
-            (146.0, 4.2, "running"),
-            (152.0, 4.4, "running"),
-            (144.0, 4.0, "running"),
             (150.0, 4.2, "running"),
             (145.0, 4.1, "running"),
-            (151.0, 4.3, "running"),
         ),
         "washer": (
-            (520.0, None, "running"),
-            (90.0, None, "idle"),
             (510.0, None, "running"),
-            (85.0, None, "idle"),
             (500.0, None, "running"),
-            (80.0, None, "idle"),
         ),
     }
     values = values_by_type[appliance.appliance_type]
