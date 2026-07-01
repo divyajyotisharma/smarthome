@@ -1,0 +1,41 @@
+README.md
+  s_1969933bdc4564::t_e9753c8a25c802 84
+context/feature-design.md
+  s_1969933bdc4564::t_5bcc3d82193158 56,97,219
+tests/test_seed_startup.py
+  s_1969933bdc4564::t_5dc2a5faab7428 47
+  s_1969933bdc4564::t_64302cc88775f0 24,28,31-34,50-62,64-68
+  s_1969933bdc4564::t_5bcc3d82193158 46,63
+tests/test_collection.py
+  s_1969933bdc4564::t_5bcc3d82193158 51-52
+tests/test_metrics.py
+  s_1969933bdc4564::t_5dc2a5faab7428 20-21,36-37
+app/models/core.py
+  s_1969933bdc4564::t_5dc2a5faab7428 33-38,59-64,84-89
+app/services/seed.py
+  s_1969933bdc4564::t_b1788061890618 19,21-36,38,43,55-56,59-84,86-104,106-116,118,120-123,125-126
+context/features/02-startup-database-seed.md
+  s_1969933bdc4564::t_5bcc3d82193158 200
+context/progress-tracker.md
+  s_1969933bdc4564::t_e9753c8a25c802 37,59-60,87
+tests/test_appliances.py
+  s_1969933bdc4564::t_5dc2a5faab7428 20-21,33-34,56-57
+app/schemas/core.py
+  s_1969933bdc4564::t_5dc2a5faab7428 20,54,79
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.5",
+  "base_commit_sha": "def149426f6b7bc1a287c944db289236b32ba729",
+  "prompts": {},
+  "sessions": {
+    "s_1969933bdc4564": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1c0e-f62d-7de3-8714-573a7a2e2799",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Divy <divysha3@cisco.com>"
+    }
+  }
+}
