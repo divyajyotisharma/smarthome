@@ -1,0 +1,37 @@
+tests/test_collection.py
+  s_2f76549e3a4c0a::t_37b64193d25133 1-2,9-11,73-168
+  s_2f76549e3a4c0a::t_aa1f5d558596cb 169-170
+app/scheduler.py
+  s_2f76549e3a4c0a::t_37b64193d25133 40,42-45,70,80-90
+  s_2f76549e3a4c0a::t_7d15528b973fe9 91-93
+tests/test_seed_startup.py
+  s_2f76549e3a4c0a::t_37b64193d25133 34,68
+app/services/collection.py
+  s_2f76549e3a4c0a::t_37b64193d25133 1,3-5,53-112,123
+app/services/seed.py
+  s_2f76549e3a4c0a::t_37b64193d25133 13-16,138-161
+app/services/metrics.py
+  s_2f76549e3a4c0a::t_37b64193d25133 6,45-49
+tests/test_reports.py
+  s_2f76549e3a4c0a::t_37b64193d25133 46,52,55,115,121,126,128-142
+app/config.py
+  s_2f76549e3a4c0a::t_37b64193d25133 14
+tests/test_metrics.py
+  s_2f76549e3a4c0a::t_37b64193d25133 19,23,49,59-62,70-71
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "6e8acaadf6bd2710fec496385bee7998a24f0532",
+  "prompts": {},
+  "sessions": {
+    "s_2f76549e3a4c0a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1dc9-d5fd-76b3-a73e-1c29b8d615fd",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Divy <divysha3@cisco.com>"
+    }
+  }
+}
