@@ -197,7 +197,7 @@ Test behavior:
 - Start the app through TestClient.
 - Call `GET /homes/1`.
 - Assert `200`.
-- Assert the response includes `id = 1`, `name = "Demo Home"`, and `created_at`.
+- Assert the response includes `home_id = 1`, `name = "Demo Home"`, and `created_at`.
 
 ### Regression Test
 

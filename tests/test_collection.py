@@ -48,6 +48,8 @@ def test_collects_metrics_for_active_home_appliances(tmp_path):
     assert payload["collected_count"] == 3
     assert payload["skipped_count"] == 0
     assert len(payload["readings"]) == 3
+    assert all("id" not in reading for reading in payload["readings"])
+    assert all("metric_reading_id" in reading for reading in payload["readings"])
     assert all(reading["raw_payload"] for reading in payload["readings"])
     assert all("operational_state" in reading for reading in payload["readings"])
 

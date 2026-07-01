@@ -21,15 +21,17 @@ def test_seed_demo_data_is_idempotent(tmp_path):
         seed_demo_data(session, settings)
         seed_demo_data(session, settings)
 
-        homes = session.scalars(select(Home)).all()
+        homes = session.scalars(select(Home).order_by(Home.id)).all()
         appliances = session.scalars(select(Appliance)).all()
         readings = session.scalars(select(MetricReading)).all()
 
-    assert len(homes) == 1
+    assert len(homes) == 2
     assert homes[0].id == settings.default_home_id
     assert homes[0].name == "Demo Home"
-    assert len(appliances) == 3
-    assert len(readings) == 6
+    assert homes[1].id == 2
+    assert homes[1].name == "Weekend Home"
+    assert len(appliances) == 5
+    assert len(readings) == 10
 
 
 def test_startup_seeds_default_home_and_exposes_it(tmp_path):
@@ -41,6 +43,26 @@ def test_startup_seeds_default_home_and_exposes_it(tmp_path):
         response = client.get(f"/homes/{settings.default_home_id}")
 
     assert response.status_code == 200
-    assert response.json()["id"] == settings.default_home_id
+    assert "id" not in response.json()
+    assert response.json()["home_id"] == settings.default_home_id
     assert response.json()["name"] == "Demo Home"
     assert "created_at" in response.json()
+
+
+def test_startup_seeds_second_home_with_own_demo_data(tmp_path):
+    db_path = tmp_path / "second-home-test.db"
+    settings = Settings(database_url=f"sqlite:///{db_path}")
+    app = create_app(settings)
+
+    with TestClient(app) as client:
+        home_response = client.get("/homes/2")
+        appliances_response = client.get("/homes/2/appliances")
+        metrics_response = client.get("/homes/2/metrics")
+
+    assert home_response.status_code == 200
+    assert "id" not in home_response.json()
+    assert home_response.json()["name"] == "Weekend Home"
+    assert appliances_response.status_code == 200
+    assert len(appliances_response.json()) == 2
+    assert metrics_response.status_code == 200
+    assert len(metrics_response.json()) == 4

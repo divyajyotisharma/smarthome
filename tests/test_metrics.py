@@ -17,6 +17,8 @@ def test_lists_seeded_metrics_for_home(tmp_path):
     assert response.status_code == 200
     readings = response.json()
     assert len(readings) == 6
+    assert "id" not in readings[0]
+    assert "metric_reading_id" in readings[0]
     assert readings[0]["home_id"] == 1
     assert "power_watts" in readings[0]
     assert "temperature_celsius" in readings[0]
@@ -31,8 +33,8 @@ def test_collection_created_metrics_are_visible(tmp_path):
 
     assert collect_response.status_code == 200
     assert metrics_response.status_code == 200
-    collected_ids = {reading["id"] for reading in collect_response.json()["readings"]}
-    metric_ids = {reading["id"] for reading in metrics_response.json()}
+    collected_ids = {reading["metric_reading_id"] for reading in collect_response.json()["readings"]}
+    metric_ids = {reading["metric_reading_id"] for reading in metrics_response.json()}
     assert collected_ids.issubset(metric_ids)
     assert all("raw_payload" in reading for reading in metrics_response.json())
 

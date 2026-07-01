@@ -30,6 +30,12 @@ class Home(Base):
     appliances: Mapped[list["Appliance"]] = relationship(back_populates="home")
     metric_readings: Mapped[list["MetricReading"]] = relationship(back_populates="home")
 
+    @property
+    def home_id(self) -> int:
+        """Expose an entity-specific identifier for API responses."""
+
+        return self.id
+
 
 class Appliance(Base):
     """Registered device instance under a home; vendor behavior stays outside this model."""
@@ -50,6 +56,12 @@ class Appliance(Base):
     home: Mapped[Home] = relationship(back_populates="appliances")
     metric_readings: Mapped[list["MetricReading"]] = relationship(back_populates="appliance")
 
+    @property
+    def appliance_id(self) -> int:
+        """Expose an entity-specific identifier for API responses."""
+
+        return self.id
+
 
 class MetricReading(Base):
     """Normalized metric columns plus raw vendor payload for traceability."""
@@ -69,3 +81,9 @@ class MetricReading(Base):
 
     home: Mapped[Home] = relationship(back_populates="metric_readings")
     appliance: Mapped[Appliance] = relationship(back_populates="metric_readings")
+
+    @property
+    def metric_reading_id(self) -> int:
+        """Expose an entity-specific identifier for API responses."""
+
+        return self.id

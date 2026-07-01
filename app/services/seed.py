@@ -16,16 +16,31 @@ SEED_RECORDED_AT = (
 
 
 def seed_demo_data(session: Session, settings: Settings) -> None:
-    """Create the default home, appliances, and sample readings when missing."""
+    """Create demo homes, appliances, and sample readings when missing."""
 
-    home = session.get(Home, settings.default_home_id)
+    for home_id, home_name, appliance_specs in _demo_home_specs(settings):
+        _seed_home(session, home_id, home_name, appliance_specs, settings.default_collection_interval_seconds)
+
+    session.commit()
+
+
+def _seed_home(
+    session: Session,
+    home_id: int,
+    home_name: str,
+    appliance_specs: list[dict],
+    collection_interval_seconds: int,
+) -> None:
+    """Seed one home context without duplicating existing records."""
+
+    home = session.get(Home, home_id)
     if home is None:
-        home = Home(id=settings.default_home_id, name=settings.default_home_name)
+        home = Home(id=home_id, name=home_name)
         session.add(home)
         session.flush()
 
     if not session.scalars(select(Appliance).where(Appliance.home_id == home.id)).first():
-        session.add_all(_demo_appliances(home.id, settings.default_collection_interval_seconds))
+        session.add_all(_demo_appliances(home.id, appliance_specs, collection_interval_seconds))
         session.flush()
 
     if not session.scalars(select(MetricReading).where(MetricReading.home_id == home.id)).first():
@@ -36,40 +51,79 @@ def seed_demo_data(session: Session, settings: Settings) -> None:
             for reading in _demo_readings_for_appliance(home.id, appliance)
         )
 
-    session.commit()
+
+def _demo_home_specs(settings: Settings) -> list[tuple[int, str, list[dict]]]:
+    """Return the fixed home contexts used for local review."""
+
+    return [
+        (
+            settings.default_home_id,
+            settings.default_home_name,
+            [
+                {
+                    "id": 1,
+                    "display_name": "Living Room AC",
+                    "vendor": "acme_home",
+                    "appliance_type": "air_conditioner",
+                    "vendor_device_id": "acme-ac-101",
+                },
+                {
+                    "id": 2,
+                    "display_name": "Kitchen Refrigerator",
+                    "vendor": "acme_home",
+                    "appliance_type": "refrigerator",
+                    "vendor_device_id": "acme-fridge-202",
+                },
+                {
+                    "id": 3,
+                    "display_name": "Laundry Washer",
+                    "vendor": "zenith_iot",
+                    "appliance_type": "washer",
+                    "vendor_device_id": "zenith-washer-303",
+                },
+            ],
+        ),
+        (
+            2,
+            "Weekend Home",
+            [
+                {
+                    "id": 4,
+                    "display_name": "Guest Suite AC",
+                    "vendor": "zenith_iot",
+                    "appliance_type": "air_conditioner",
+                    "vendor_device_id": "zenith-ac-204",
+                },
+                {
+                    "id": 5,
+                    "display_name": "Garage Refrigerator",
+                    "vendor": "acme_home",
+                    "appliance_type": "refrigerator",
+                    "vendor_device_id": "acme-fridge-205",
+                },
+            ],
+        ),
+    ]
 
 
-def _demo_appliances(home_id: int, collection_interval_seconds: int) -> list[Appliance]:
-    """Return the fixed appliance set used for the seeded demo home."""
+def _demo_appliances(
+    home_id: int,
+    appliance_specs: list[dict],
+    collection_interval_seconds: int,
+) -> list[Appliance]:
+    """Return appliance rows for one seeded home."""
 
     return [
         Appliance(
-            id=1,
+            id=spec["id"],
             home_id=home_id,
-            display_name="Living Room AC",
-            vendor="acme_home",
-            appliance_type="air_conditioner",
-            vendor_device_id="acme-ac-101",
+            display_name=spec["display_name"],
+            vendor=spec["vendor"],
+            appliance_type=spec["appliance_type"],
+            vendor_device_id=spec["vendor_device_id"],
             collection_interval_seconds=collection_interval_seconds,
-        ),
-        Appliance(
-            id=2,
-            home_id=home_id,
-            display_name="Kitchen Refrigerator",
-            vendor="acme_home",
-            appliance_type="refrigerator",
-            vendor_device_id="acme-fridge-202",
-            collection_interval_seconds=collection_interval_seconds,
-        ),
-        Appliance(
-            id=3,
-            home_id=home_id,
-            display_name="Laundry Washer",
-            vendor="zenith_iot",
-            appliance_type="washer",
-            vendor_device_id="zenith-washer-303",
-            collection_interval_seconds=collection_interval_seconds,
-        ),
+        )
+        for spec in appliance_specs
     ]
 
 

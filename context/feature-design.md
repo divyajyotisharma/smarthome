@@ -53,7 +53,7 @@ Create local SQLite tables and seed reviewer-friendly demo data without duplicat
 
 `HomeResponse`
 
-- `id: int`
+- `home_id: int`
 - `name: str`
 - `created_at: datetime`
 
@@ -94,7 +94,7 @@ Allow a client to view, register, and deactivate appliances under a home.
 
 `ApplianceResponse`
 
-- `id: int`
+- `appliance_id: int`
 - `home_id: int`
 - `display_name: str`
 - `vendor: str`
@@ -216,7 +216,7 @@ Expose stored metric history in a home-scoped, read-only way.
 
 `MetricReadingResponse`
 
-- `id: int`
+- `metric_reading_id: int`
 - `home_id: int`
 - `appliance_id: int`
 - `vendor: str`

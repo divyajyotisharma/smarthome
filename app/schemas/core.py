@@ -17,7 +17,7 @@ class HomeResponse(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
-    id: int
+    home_id: int
     name: str
     created_at: datetime
 
@@ -51,7 +51,7 @@ class ApplianceResponse(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
-    id: int
+    appliance_id: int
     home_id: int
     display_name: str
     vendor: str
@@ -76,7 +76,7 @@ class MetricReadingResponse(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
-    id: int
+    metric_reading_id: int
     home_id: int
     appliance_id: int
     vendor: str

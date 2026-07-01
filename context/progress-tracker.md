@@ -34,6 +34,7 @@ Update this file after every meaningful implementation change.
 - Completed Feature 6 report APIs and startup daily report scheduler wiring.
 - Completed default-home scheduled metric collection using an APScheduler interval job.
 - Restored appliance read APIs to use separate list and detail routes: `GET /homes/{home_id}/appliances` and `GET /homes/{home_id}/appliances/{appliance_id}`.
+- Added a second seeded demo home, `Weekend Home`, with its own appliances and sample readings.
 
 ## In Progress
 
@@ -55,8 +56,8 @@ Update this file after every meaningful implementation change.
 - Ignore local DB files with `data/*.db` and `data/*.sqlite`.
 - Keep `data/.gitkeep` if the folder should exist in the repo.
 - Startup creates tables if needed.
-- Startup seeds one default demo home/client context only if missing.
-- Startup seeds 2-3 demo appliances only if missing.
+- Startup seeds the default demo home/client context and one secondary demo home only if missing.
+- Startup seeds demo appliances for each seeded home only if missing.
 - Startup seeds enough sample metric readings for immediate report generation only if missing.
 - Startup seeding must not duplicate data after app restart.
 - UI must not create seed data.
@@ -83,3 +84,4 @@ Update this file after every meaningful implementation change.
 - Feature 5 verification: `.venv/bin/python -m pytest tests/test_health.py tests/test_seed_startup.py tests/test_project_structure.py tests/test_appliances.py tests/test_collection.py tests/test_metrics.py -v` passed with 21 tests and 1 FastAPI/Starlette TestClient deprecation warning; OpenAPI structure test confirms `/homes/{home_id}/metrics`; metrics API tests confirm seeded metrics, collection-created metrics, appliance filtering, inclusive date filtering, invalid date range `400`, and missing-home `404`; live API checks on port 8001 confirmed unfiltered metrics, filtered metrics, and OpenAPI schema output.
 - Feature 6 verification: `.venv/bin/python -m pytest tests/test_health.py tests/test_seed_startup.py tests/test_project_structure.py tests/test_appliances.py tests/test_collection.py tests/test_metrics.py tests/test_reports.py -v` passed with 28 tests and 1 FastAPI/Starlette TestClient deprecation warning; OpenAPI structure test confirms `/homes/{home_id}/reports/daily` and `/homes/{home_id}/reports/custom`; report tests confirm daily/custom summaries, empty ranges, invalid range `400`, missing-home `404`, and startup scheduler job registration; live API checks on port 8001 confirmed daily report, custom report, invalid range `400`, and OpenAPI schema output.
 - Scheduled collection verification: TDD red phase confirmed the `default-home-collection` scheduler job was missing while manual `POST /homes/1/collect` still passed; final regression `.venv/bin/python -m pytest tests/test_health.py tests/test_seed_startup.py tests/test_project_structure.py tests/test_appliances.py tests/test_collection.py tests/test_metrics.py tests/test_reports.py -v` passed with 30 tests and 1 FastAPI/Starlette TestClient deprecation warning; live API validation on port 8001 showed `GET /homes/1/metrics` increasing from 16 to 22 after the configured 60-second interval without manual collection, then `POST /homes/1/collect` immediately added 3 more readings with IDs 23-25.
+- Second home seed verification: TDD red phase confirmed `/homes/2` was missing; final regression `.venv/bin/python -m pytest tests/test_health.py tests/test_seed_startup.py tests/test_project_structure.py tests/test_appliances.py tests/test_collection.py tests/test_metrics.py tests/test_reports.py -v` passed with 34 tests and 1 FastAPI/Starlette TestClient deprecation warning; tests confirm `Weekend Home` has 2 appliances and 4 seeded readings.

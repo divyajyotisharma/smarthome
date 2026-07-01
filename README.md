@@ -81,7 +81,7 @@ The backend recreates tables and reseeds demo data on startup only when it is mi
 ## Key Design Choices
 
 - File-based SQLite at `data/smarthome.db`.
-- Idempotent backend seeding for one demo home, demo appliances, and sample metric readings.
+- Idempotent backend seeding for two demo homes, demo appliances, and sample metric readings.
 - Home-scoped APIs throughout for future multi-client extensibility.
 - Manual collection remains available in Swagger for demos/tests.
 - Scheduled collection runs for the default home on a simple APScheduler interval job.

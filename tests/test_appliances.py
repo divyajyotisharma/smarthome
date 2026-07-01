@@ -17,6 +17,8 @@ def test_lists_seeded_appliances_for_home(tmp_path):
     assert response.status_code == 200
     appliances = response.json()
     assert len(appliances) == 3
+    assert "id" not in appliances[0]
+    assert appliances[0]["appliance_id"] == 1
     assert appliances[0]["home_id"] == 1
     assert appliances[0]["display_name"]
     assert appliances[0]["status"] == "active"
@@ -28,7 +30,8 @@ def test_gets_one_appliance_by_id(tmp_path):
 
     assert response.status_code == 200
     appliance = response.json()
-    assert appliance["id"] == 1
+    assert "id" not in appliance
+    assert appliance["appliance_id"] == 1
     assert appliance["home_id"] == 1
 
 
@@ -50,7 +53,8 @@ def test_registers_supported_appliance_with_default_interval(tmp_path):
     assert created["display_name"] == "Bedroom AC"
     assert created["collection_interval_seconds"] == 60
     assert created["status"] == "active"
-    assert any(item["id"] == created["id"] for item in list_response.json())
+    assert "id" not in created
+    assert any(item["appliance_id"] == created["appliance_id"] for item in list_response.json())
 
 
 def test_rejects_unsupported_vendor_type_combination(tmp_path):
