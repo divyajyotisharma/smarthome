@@ -48,6 +48,7 @@ Required schemas:
 Schema rules:
 
 - `collection_interval_seconds` is optional in create requests.
+- `collection_interval_seconds`, when provided, must be greater than zero.
 - Responses include appliance metadata captured at registration.
 - Responses include `status` and `deactivated_at` so soft deactivation is visible in Swagger.
 
@@ -154,8 +155,8 @@ Request:
 
 Response:
 
-- Created `ApplianceResponse`.
-- If the same `home_id + vendor + vendor_device_id` already exists, return the existing `ApplianceResponse` without creating a duplicate row.
+- New appliance registration returns `201 Created` with `ApplianceResponse`.
+- If the same `home_id + vendor + vendor_device_id` already exists, return `200 OK` with the existing `ApplianceResponse` without creating a duplicate row.
 
 Validation:
 
@@ -163,6 +164,7 @@ Validation:
 - `vendor + appliance_type` must be supported.
 - Idempotency key is `home_id + vendor + vendor_device_id`.
 - Missing interval uses config default.
+- Provided interval must be positive.
 - Do not require vendor metadata beyond the requested fields.
 
 ### `DELETE /homes/{home_id}/appliances/{appliance_id}`
@@ -227,6 +229,14 @@ Test behavior:
 - Assert `400`.
 - Assert response message clearly identifies unsupported vendor/type.
 
+### Request Validation Tests
+
+Test behavior:
+
+- Missing required registration fields return FastAPI validation errors.
+- Non-positive `collection_interval_seconds` values are rejected.
+- Missing homes and cross-home appliance access return `404`.
+
 ### Soft Deactivate Test
 
 Test behavior:
@@ -270,6 +280,7 @@ Live Swagger/API validation:
 - [x] Add list seeded appliances test.
 - [x] Add register supported appliance test.
 - [x] Add idempotent register appliance test.
+- [x] Add registration request validation tests.
 - [x] Add unsupported vendor/type validation test.
 - [x] Add appliance list filter test.
 - [x] Add soft deactivate test.

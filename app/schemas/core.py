@@ -2,7 +2,7 @@
 
 from datetime import date, datetime
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class HealthResponse(BaseModel):
@@ -43,7 +43,7 @@ class ApplianceCreateRequest(BaseModel):
     vendor: str
     appliance_type: str
     vendor_device_id: str
-    collection_interval_seconds: int | None = None
+    collection_interval_seconds: int | None = Field(default=None, gt=0)
 
 
 class ApplianceResponse(BaseModel):

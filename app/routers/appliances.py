@@ -1,6 +1,6 @@
 """Home-scoped appliance registration and lifecycle routes."""
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.orm import Session
 
 from app.config import settings
@@ -34,12 +34,16 @@ def list_appliances(
 def create_appliance(
     home_id: int,
     request: ApplianceCreateRequest,
+    response: Response,
     session: Session = Depends(get_session),
 ):
     """Register a new appliance under the requested home."""
 
     try:
-        return appliance_service.create_appliance(session, settings, home_id, request)
+        result = appliance_service.create_appliance(session, settings, home_id, request)
+        if not result.created:
+            response.status_code = status.HTTP_200_OK
+        return result.appliance
     except appliance_service.HomeNotFoundError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     except appliance_service.UnsupportedApplianceError as exc:

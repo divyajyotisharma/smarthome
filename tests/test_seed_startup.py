@@ -49,6 +49,18 @@ def test_startup_seeds_default_home_and_exposes_it(tmp_path):
     assert "created_at" in response.json()
 
 
+def test_missing_home_returns_404(tmp_path):
+    db_path = tmp_path / "missing-home-test.db"
+    settings = Settings(database_url=f"sqlite:///{db_path}")
+    app = create_app(settings)
+
+    with TestClient(app) as client:
+        response = client.get("/homes/999")
+
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Home not found"
+
+
 def test_startup_seeds_second_home_with_own_demo_data(tmp_path):
     db_path = tmp_path / "second-home-test.db"
     settings = Settings(database_url=f"sqlite:///{db_path}")

@@ -55,6 +55,21 @@ def test_custom_report_summarizes_inclusive_range(tmp_path):
     assert report["total_metric_readings"] == 6
 
 
+def test_report_includes_deactivation_lifecycle_metrics(tmp_path):
+    with _client(tmp_path) as client:
+        client.delete("/homes/1/appliances/1")
+        response = client.get("/homes/1/reports/daily", params={"date": "2026-07-01"})
+
+    assert response.status_code == 200
+    report = response.json()
+    summaries = _summary_by_appliance(report)
+    assert report["total_metric_readings"] == 1
+    assert summaries[1]["readings_count"] == 1
+    assert summaries[1]["state_counts"] == {"deactivated": 1}
+    assert summaries[1]["power_watts"]["avg"] == 820.0
+    assert summaries[2]["readings_count"] == 0
+
+
 def test_report_empty_range_keeps_appliance_context(tmp_path):
     with _client(tmp_path) as client:
         response = client.get("/homes/1/reports/daily", params={"date": "2026-07-01"})

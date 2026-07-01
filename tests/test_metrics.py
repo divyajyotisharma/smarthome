@@ -40,6 +40,17 @@ def test_collection_created_metrics_are_visible(tmp_path):
     assert all("raw_payload" in reading for reading in metrics_response.json())
 
 
+def test_deactivation_metric_is_visible_in_history(tmp_path):
+    with _client(tmp_path) as client:
+        client.delete("/homes/1/appliances/1")
+        metrics_response = client.get("/homes/1/metrics", params={"appliance_id": 1})
+
+    assert metrics_response.status_code == 200
+    latest_reading = metrics_response.json()[0]
+    assert latest_reading["operational_state"] == "deactivated"
+    assert latest_reading["raw_payload"]["event"] == "appliance_deactivated"
+
+
 def test_filters_metrics_by_appliance_id(tmp_path):
     with _client(tmp_path) as client:
         response = client.get("/homes/1/metrics", params={"appliance_id": 1})

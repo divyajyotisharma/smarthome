@@ -63,7 +63,8 @@ The backend recreates tables and reseeds demo data on startup only when it is mi
 }
 ```
 
-   Repeating the same `home_id + vendor + vendor_device_id` registration returns the existing appliance instead of creating a duplicate.
+   Repeating the same `home_id + vendor + vendor_device_id` registration returns `200 OK` with the existing appliance instead of creating a duplicate. A new appliance returns `201 Created`.
+   `collection_interval_seconds`, when provided, must be greater than zero.
 
 8. Run `POST /homes/1/collect` to manually collect one metric reading for each active appliance.
 9. Run `GET /homes/1/metrics` to view stored historical metric readings.
@@ -88,7 +89,7 @@ The backend recreates tables and reseeds demo data on startup only when it is mi
 - File-based SQLite at `data/smarthome.db`.
 - Idempotent backend seeding for two demo homes, demo appliances, and minimal sample readings across two dates.
 - Home-scoped APIs throughout for future multi-client extensibility.
-- Appliance registration is idempotent within a home using `home_id + vendor + vendor_device_id`.
+- Appliance registration is idempotent within a home using `home_id + vendor + vendor_device_id`; new creates return `201`, idempotent replays return `200`.
 - Manual collection remains available in Swagger for demos/tests.
 - Scheduled collection uses a simple APScheduler tick and collects active appliances when their own interval is due.
 - Report endpoints summarize the same stored readings used by metrics history.

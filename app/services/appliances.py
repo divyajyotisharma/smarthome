@@ -1,5 +1,7 @@
 """Appliance business rules for home-scoped registration and lifecycle changes."""
 
+from dataclasses import dataclass
+
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -34,6 +36,14 @@ class UnsupportedApplianceError(ApplianceServiceError):
     pass
 
 
+@dataclass(frozen=True)
+class ApplianceRegistrationResult:
+    """Result of registering a vendor device under a home."""
+
+    appliance: Appliance
+    created: bool
+
+
 def list_appliances(session: Session, home_id: int) -> list[Appliance]:
     """Return all appliances registered under a home."""
 
@@ -50,7 +60,7 @@ def create_appliance(
     settings: Settings,
     home_id: int,
     request: ApplianceCreateRequest,
-) -> Appliance:
+) -> ApplianceRegistrationResult:
     """Create a new appliance record using the default interval when needed."""
 
     _get_home(session, home_id)
@@ -63,7 +73,7 @@ def create_appliance(
         vendor_device_id=request.vendor_device_id,
     )
     if existing_appliance is not None:
-        return existing_appliance
+        return ApplianceRegistrationResult(appliance=existing_appliance, created=False)
 
     appliance = Appliance(
         home_id=home_id,
@@ -80,7 +90,7 @@ def create_appliance(
     session.add(appliance)
     session.commit()
     session.refresh(appliance)
-    return appliance
+    return ApplianceRegistrationResult(appliance=appliance, created=True)
 
 
 def get_appliance(session: Session, home_id: int, appliance_id: int) -> Appliance:
