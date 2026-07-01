@@ -1,0 +1,43 @@
+README.md
+  s_53f6451b3b2ea8::t_0d47c36822c645 67
+  s_53f6451b3b2ea8::t_9121bc30394b18 66,92
+context/progress-tracker.md
+  s_53f6451b3b2ea8::t_97da7cec52cc3b 72,93
+  s_53f6451b3b2ea8::t_441faec72ab52c 73,92
+tests/test_reports.py
+  s_53f6451b3b2ea8::t_798107860e2206 58-72
+app/services/appliances.py
+  s_53f6451b3b2ea8::t_936c7d74839672 3-4,39-46,63,76,93
+tests/test_metrics.py
+  s_53f6451b3b2ea8::t_ef1bc528341250 43-53
+app/routers/appliances.py
+  s_53f6451b3b2ea8::t_88a7a455d69cfe 3,37,43-46
+context/features/03-appliance-management.md
+  s_53f6451b3b2ea8::t_577dc950371639 158-159
+  s_53f6451b3b2ea8::t_c7e9e2d34f337d 51,167,232-239,283
+tests/test_seed_startup.py
+  s_53f6451b3b2ea8::t_32f0501ba49c9b 52-63
+tests/test_appliances.py
+  s_53f6451b3b2ea8::t_97c058e20ca6da 88-104,167
+  s_53f6451b3b2ea8::t_f795299ade89d7 77
+  s_53f6451b3b2ea8::t_c16f3a78cab78e 188-217
+  s_53f6451b3b2ea8::t_b089441ea26ecd 105-166,168-187,242-265,297-321
+app/schemas/core.py
+  s_53f6451b3b2ea8::t_d38e45217dc1bd 5,46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "f0e8dcf3053286e8a7663c4a06661a6ab75453cb",
+  "prompts": {},
+  "sessions": {
+    "s_53f6451b3b2ea8": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1e55-5f26-7013-9358-53f5283abedd",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Divy <divysha3@cisco.com>"
+    }
+  }
+}
