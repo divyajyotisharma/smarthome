@@ -8,7 +8,7 @@ Update this file after every meaningful implementation change.
 
 ## Current Goal
 
-- Prepare Feature 7: minimal demo UI.
+- Complete backend behavior corrections for appliance registration and deactivation history.
 
 ## Completed
 
@@ -35,16 +35,16 @@ Update this file after every meaningful implementation change.
 - Completed default-home scheduled metric collection using an APScheduler interval job.
 - Restored appliance read APIs to use separate list and detail routes: `GET /homes/{home_id}/appliances` and `GET /homes/{home_id}/appliances/{appliance_id}`.
 - Added a second seeded demo home, `Weekend Home`, with its own appliances and sample readings.
+- Made appliance registration idempotent for `home_id + vendor + vendor_device_id`.
+- Added deactivation lifecycle metric readings so historical metrics show when an appliance becomes inactive.
 
 ## In Progress
 
-- Preparing Feature 7 minimal demo UI planning.
+- None currently.
 
 ## Next Up
 
-- Begin Feature 7 minimal demo UI implementation plan.
-- Keep UI read-only/consumer-focused except existing appliance registration and home-level collection actions.
-- Verify UI through browser/manual workflow after API coverage remains green.
+- Prepare final submission review and optional live Swagger validation.
 
 ## Open Questions
 
@@ -69,6 +69,8 @@ Update this file after every meaningful implementation change.
 - Scheduled metric collection uses one home-level APScheduler interval job for `default_home_id` every `default_collection_interval_seconds`.
 - `POST /homes/{home_id}/collect` remains as a manual Swagger/demo helper.
 - Per-appliance scheduler jobs remain out of scope; appliance-level interval fields stay in the model for future extensibility.
+- Appliance registration idempotency uses `home_id + vendor + vendor_device_id` and returns the existing appliance instead of creating duplicates.
+- Soft deactivation writes one lifecycle metric event with `operational_state = "deactivated"` and latest known metric values when available.
 
 ## Session Notes
 
@@ -85,3 +87,4 @@ Update this file after every meaningful implementation change.
 - Feature 6 verification: `.venv/bin/python -m pytest tests/test_health.py tests/test_seed_startup.py tests/test_project_structure.py tests/test_appliances.py tests/test_collection.py tests/test_metrics.py tests/test_reports.py -v` passed with 28 tests and 1 FastAPI/Starlette TestClient deprecation warning; OpenAPI structure test confirms `/homes/{home_id}/reports/daily` and `/homes/{home_id}/reports/custom`; report tests confirm daily/custom summaries, empty ranges, invalid range `400`, missing-home `404`, and startup scheduler job registration; live API checks on port 8001 confirmed daily report, custom report, invalid range `400`, and OpenAPI schema output.
 - Scheduled collection verification: TDD red phase confirmed the `default-home-collection` scheduler job was missing while manual `POST /homes/1/collect` still passed; final regression `.venv/bin/python -m pytest tests/test_health.py tests/test_seed_startup.py tests/test_project_structure.py tests/test_appliances.py tests/test_collection.py tests/test_metrics.py tests/test_reports.py -v` passed with 30 tests and 1 FastAPI/Starlette TestClient deprecation warning; live API validation on port 8001 showed `GET /homes/1/metrics` increasing from 16 to 22 after the configured 60-second interval without manual collection, then `POST /homes/1/collect` immediately added 3 more readings with IDs 23-25.
 - Second home seed verification: TDD red phase confirmed `/homes/2` was missing; final regression `.venv/bin/python -m pytest tests/test_health.py tests/test_seed_startup.py tests/test_project_structure.py tests/test_appliances.py tests/test_collection.py tests/test_metrics.py tests/test_reports.py -v` passed with 34 tests and 1 FastAPI/Starlette TestClient deprecation warning; tests confirm `Weekend Home` has 2 appliances and 4 seeded readings.
+- Appliance behavior correction verification: TDD red phase confirmed duplicate registrations created two appliance rows and deactivation did not create a metric event; final regression `.venv/bin/python -m pytest` passed with 40 tests and 1 FastAPI/Starlette TestClient deprecation warning.

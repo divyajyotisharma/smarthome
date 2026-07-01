@@ -57,6 +57,34 @@ def test_registers_supported_appliance_with_default_interval(tmp_path):
     assert any(item["appliance_id"] == created["appliance_id"] for item in list_response.json())
 
 
+def test_register_appliance_is_idempotent_for_same_home_vendor_device(tmp_path):
+    request = {
+        "display_name": "Bedroom AC",
+        "vendor": "zenith_iot",
+        "appliance_type": "air_conditioner",
+        "vendor_device_id": "zenith-ac-idempotent",
+    }
+
+    with _client(tmp_path) as client:
+        first_response = client.post("/homes/1/appliances", json=request)
+        second_response = client.post(
+            "/homes/1/appliances",
+            json={**request, "display_name": "Bedroom AC Duplicate"},
+        )
+        list_response = client.get("/homes/1/appliances")
+
+    assert first_response.status_code == 201
+    assert second_response.status_code == 201
+    assert second_response.json()["appliance_id"] == first_response.json()["appliance_id"]
+    assert second_response.json()["display_name"] == "Bedroom AC"
+    matching = [
+        appliance
+        for appliance in list_response.json()
+        if appliance["vendor_device_id"] == "zenith-ac-idempotent"
+    ]
+    assert len(matching) == 1
+
+
 def test_rejects_unsupported_vendor_type_combination(tmp_path):
     with _client(tmp_path) as client:
         response = client.post(
@@ -91,3 +119,24 @@ def test_delete_soft_deactivates_appliance(tmp_path):
     assert delete_response.json()["deactivated_at"] is not None
     assert fetch_response.status_code == 200
     assert fetch_response.json()["status"] == "inactive"
+
+
+def test_delete_registers_deactivation_metric_with_latest_known_values(tmp_path):
+    with _client(tmp_path) as client:
+        before_metrics = client.get("/homes/1/metrics", params={"appliance_id": 1}).json()
+        delete_response = client.delete("/homes/1/appliances/1")
+        after_metrics = client.get("/homes/1/metrics", params={"appliance_id": 1}).json()
+        second_delete_response = client.delete("/homes/1/appliances/1")
+        final_metrics = client.get("/homes/1/metrics", params={"appliance_id": 1}).json()
+
+    assert delete_response.status_code == 200
+    assert second_delete_response.status_code == 200
+    assert len(after_metrics) == len(before_metrics) + 1
+    assert len(final_metrics) == len(after_metrics)
+
+    deactivation_metric = after_metrics[0]
+    previous_latest_metric = before_metrics[0]
+    assert deactivation_metric["operational_state"] == "deactivated"
+    assert deactivation_metric["power_watts"] == previous_latest_metric["power_watts"]
+    assert deactivation_metric["temperature_celsius"] == previous_latest_metric["temperature_celsius"]
+    assert deactivation_metric["raw_payload"]["event"] == "appliance_deactivated"

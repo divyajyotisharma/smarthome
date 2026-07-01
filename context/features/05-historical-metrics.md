@@ -17,6 +17,7 @@
 - Do not add appliance-level collection APIs.
 - Do not add report generation in this feature.
 - Preserve normalized metric fields and raw vendor payloads in responses.
+- Include lifecycle metric readings, such as appliance deactivation events, alongside vendor-collected readings.
 - Reuse existing `MetricReadingResponse` unless implementation exposes a clear need for another schema.
 - Keep route handlers thin and put metrics query behavior in services.
 - Keep schemas under `app/schemas/`, routes under `app/routers/`, and services under `app/services/`.
@@ -32,6 +33,7 @@ Use existing SQLAlchemy models in `app/models/core.py`.
 - `Home`: validates that historical metrics are scoped to an existing home.
 - `Appliance`: supports appliance filter validation within a home context.
 - `MetricReading`: stores normalized metric fields plus `raw_payload`.
+- Lifecycle readings use the same `MetricReading` model so state changes appear in the same history stream.
 
 No new persisted model is expected for this feature.
 
@@ -119,6 +121,7 @@ Validation:
 - Invalid date ranges return a clear `400`.
 - The response must expose normalized fields consistently for all vendors.
 - The response must preserve `raw_payload`.
+- Deactivation lifecycle events appear with `operational_state = "deactivated"` and latest known metric values when available.
 
 ## Tests
 
@@ -143,6 +146,15 @@ Test behavior:
 - Call `GET /homes/1/metrics`.
 - Assert the metrics list includes the newly collected readings.
 - Assert readings from different vendors share the same normalized response shape.
+
+### Deactivation Event Metrics Test
+
+Test behavior:
+
+- Deactivate an active appliance.
+- Call `GET /homes/{home_id}/metrics` for that appliance.
+- Assert a new latest reading records `operational_state = "deactivated"`.
+- Assert the reading carries latest known power and temperature values when available.
 
 ### Appliance Filter Test
 
@@ -206,6 +218,7 @@ Live Swagger/API validation:
 - [x] Reuse `MetricReadingResponse` for API responses.
 - [x] Add tests for seeded metrics listing.
 - [x] Add tests for collection-created metrics visibility.
+- [x] Add tests for deactivation lifecycle metrics visibility.
 - [x] Add tests for appliance filtering.
 - [x] Add tests for date range filtering.
 - [x] Add tests for invalid date ranges.

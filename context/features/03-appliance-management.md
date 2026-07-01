@@ -15,6 +15,7 @@
 - Do not add client/user auth.
 - Do not add a client-facing home creation API.
 - Register appliances only under an existing home.
+- Treat registration as idempotent for the same `home_id + vendor + vendor_device_id`.
 - Validate `vendor + appliance_type` against a static supported-device registry.
 - Keep vendor interactions mocked/configured only; do not call real vendor APIs.
 - Do not add appliance metadata update APIs.
@@ -78,10 +79,12 @@ Responsibilities:
 - List appliances for a home.
 - Fetch one appliance by ID within a home.
 - Register an appliance under a home.
+- Return the existing appliance when the same vendor device is registered again in the same home.
 - Apply default collection interval when request omits it.
 - Validate supported vendor/type combinations.
 - Soft deactivate an appliance by setting inactive/decommissioned status and `deactivated_at`.
 - Keep historical metric rows untouched when deactivating an appliance.
+- Add one lifecycle metric reading when an active appliance is deactivated.
 
 ### Vendor Registry
 
@@ -152,11 +155,13 @@ Request:
 Response:
 
 - Created `ApplianceResponse`.
+- If the same `home_id + vendor + vendor_device_id` already exists, return the existing `ApplianceResponse` without creating a duplicate row.
 
 Validation:
 
 - Home must exist.
 - `vendor + appliance_type` must be supported.
+- Idempotency key is `home_id + vendor + vendor_device_id`.
 - Missing interval uses config default.
 - Do not require vendor metadata beyond the requested fields.
 
@@ -175,6 +180,8 @@ Validation:
 - Home must exist.
 - Appliance must exist and belong to that home.
 - Historical metric readings are preserved.
+- A deactivation metric reading is added once when an active appliance becomes inactive.
+- The deactivation metric uses `operational_state = "deactivated"` and carries the latest known power and temperature values when available.
 - Repeating delete on an already inactive appliance should stay safe and return the inactive appliance.
 
 ## Tests
@@ -203,6 +210,15 @@ Test behavior:
 - Assert response uses config default interval.
 - Call list endpoint and confirm the new appliance appears.
 
+### Idempotent Register Appliance Test
+
+Test behavior:
+
+- Register a supported appliance under home `1`.
+- Register again with the same `vendor_device_id` for the same vendor and home.
+- Assert the second response returns the original appliance ID.
+- Assert only one appliance row exists for that vendor device in the home.
+
 ### Unsupported Vendor/Type Test
 
 Test behavior:
@@ -220,6 +236,8 @@ Test behavior:
 - Assert status is inactive/decommissioned.
 - Assert `deactivated_at` is populated.
 - Fetch the same appliance through `GET /homes/1/appliances/1` and confirm it remains visible with inactive status.
+- Fetch metrics for the appliance and confirm one new `deactivated` lifecycle reading was added.
+- Repeat delete and confirm another deactivation lifecycle reading is not added.
 
 ### Regression Test
 
@@ -251,9 +269,11 @@ Live Swagger/API validation:
 - [x] Register appliances router in `app/main.py`.
 - [x] Add list seeded appliances test.
 - [x] Add register supported appliance test.
+- [x] Add idempotent register appliance test.
 - [x] Add unsupported vendor/type validation test.
 - [x] Add appliance list filter test.
 - [x] Add soft deactivate test.
+- [x] Add deactivation lifecycle metric test.
 - [x] Run Feature 1, Feature 2, structure, and Feature 3 tests.
 - [x] Validate appliance APIs through Swagger UI.
 - [x] Update `context/progress-tracker.md`.

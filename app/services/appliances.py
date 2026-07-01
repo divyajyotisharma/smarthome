@@ -4,7 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.config import Settings
-from app.models import Appliance, Home
+from app.models import Appliance, Home, MetricReading
 from app.models.core import utc_now
 from app.schemas import ApplianceCreateRequest
 from app.vendors.registry import is_supported_vendor_appliance
@@ -56,6 +56,15 @@ def create_appliance(
     _get_home(session, home_id)
     _validate_supported(request.vendor, request.appliance_type)
 
+    existing_appliance = _find_existing_appliance(
+        session=session,
+        home_id=home_id,
+        vendor=request.vendor,
+        vendor_device_id=request.vendor_device_id,
+    )
+    if existing_appliance is not None:
+        return existing_appliance
+
     appliance = Appliance(
         home_id=home_id,
         display_name=request.display_name,
@@ -89,11 +98,63 @@ def deactivate_appliance(session: Session, home_id: int, appliance_id: int) -> A
 
     appliance = get_appliance(session, home_id, appliance_id)
     if appliance.status != "inactive":
+        deactivated_at = utc_now()
         appliance.status = "inactive"
-        appliance.deactivated_at = utc_now()
+        appliance.deactivated_at = deactivated_at
+        session.add(_build_deactivation_metric(session, appliance, deactivated_at))
         session.commit()
         session.refresh(appliance)
     return appliance
+
+
+def _find_existing_appliance(
+    session: Session,
+    home_id: int,
+    vendor: str,
+    vendor_device_id: str,
+) -> Appliance | None:
+    """Return the appliance already representing a vendor device in a home."""
+
+    return session.scalar(
+        select(Appliance)
+        .where(
+            Appliance.home_id == home_id,
+            Appliance.vendor == vendor,
+            Appliance.vendor_device_id == vendor_device_id,
+        )
+        .order_by(Appliance.id)
+    )
+
+
+def _build_deactivation_metric(
+    session: Session,
+    appliance: Appliance,
+    recorded_at,
+) -> MetricReading:
+    """Create a lifecycle metric row that records appliance deactivation."""
+
+    latest_reading = session.scalar(
+        select(MetricReading)
+        .where(MetricReading.appliance_id == appliance.id)
+        .order_by(MetricReading.recorded_at.desc(), MetricReading.id.desc())
+    )
+    return MetricReading(
+        home_id=appliance.home_id,
+        appliance_id=appliance.id,
+        vendor=appliance.vendor,
+        appliance_type=appliance.appliance_type,
+        power_watts=latest_reading.power_watts if latest_reading is not None else None,
+        temperature_celsius=(
+            latest_reading.temperature_celsius if latest_reading is not None else None
+        ),
+        operational_state="deactivated",
+        recorded_at=recorded_at,
+        raw_payload={
+            "event": "appliance_deactivated",
+            "source": "lifecycle",
+            "vendor_device_id": appliance.vendor_device_id,
+        },
+    )
 
 
 def _get_home(session: Session, home_id: int) -> Home:
