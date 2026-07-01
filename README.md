@@ -15,6 +15,8 @@ SmartHome is a FastAPI backend for a home/client context that lets them register
 ## Setup
 
 ```bash
+git clone https://github.com/divyajyotisharma/smarthome.git
+cd smarthome
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
 ```
