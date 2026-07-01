@@ -3,7 +3,7 @@
 from datetime import date, datetime, time, timezone
 
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.models import Home, MetricReading
 
@@ -42,7 +42,11 @@ def list_metrics(
     if start_date is not None and end_date is not None and start_date > end_date:
         raise InvalidDateRangeError("start_date must be earlier than or equal to end_date")
 
-    query = select(MetricReading).where(MetricReading.home_id == home_id)
+    query = (
+        select(MetricReading)
+        .options(joinedload(MetricReading.appliance))
+        .where(MetricReading.home_id == home_id)
+    )
 
     if appliance_id is not None:
         query = query.where(MetricReading.appliance_id == appliance_id)

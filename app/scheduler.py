@@ -37,15 +37,12 @@ def create_report_scheduler(
         replace_existing=True,
     )
     scheduler.add_job(
-        collect_default_home_metrics,
+        collect_due_appliance_metrics,
         trigger="interval",
-        seconds=settings.default_collection_interval_seconds,
-        id="default-home-collection",
-        name="default home metric collection",
-        kwargs={
-            "session_factory": session_factory,
-            "home_id": settings.default_home_id,
-        },
+        seconds=settings.scheduler_tick_interval_seconds,
+        id="due-appliance-collection",
+        name="due appliance metric collection",
+        kwargs={"session_factory": session_factory},
         replace_existing=True,
     )
     return scheduler
@@ -70,13 +67,27 @@ def collect_default_home_metrics(
     session_factory: Callable[[], Session],
     home_id: int,
 ) -> None:
-    """Run scheduled collection for the seeded demo home."""
+    """Run a home-level collection pass for demo compatibility."""
 
     with session_factory() as session:
         readings, skipped_count = collection.collect_for_home(session, home_id)
     logger.info(
         "Collected scheduled metrics for home_id=%s readings=%s skipped=%s",
         home_id,
+        len(readings),
+        skipped_count,
+    )
+
+
+def collect_due_appliance_metrics(
+    session_factory: Callable[[], Session],
+) -> None:
+    """Run scheduled collection for appliances whose own interval is due."""
+
+    with session_factory() as session:
+        readings, skipped_count = collection.collect_due_appliances(session)
+    logger.info(
+        "Collected scheduled due appliance metrics readings=%s skipped=%s",
         len(readings),
         skipped_count,
     )

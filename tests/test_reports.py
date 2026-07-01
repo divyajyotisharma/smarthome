@@ -43,16 +43,16 @@ def test_custom_report_summarizes_inclusive_range(tmp_path):
     with _client(tmp_path) as client:
         response = client.get(
             "/homes/1/reports/custom",
-            params={"start_date": "2026-06-30", "end_date": "2026-06-30"},
+            params={"start_date": "2026-06-28", "end_date": "2026-06-30"},
         )
 
     assert response.status_code == 200
     report = response.json()
     assert report["report_type"] == "custom"
-    assert report["start_date"] == "2026-06-30"
+    assert report["start_date"] == "2026-06-28"
     assert report["end_date"] == "2026-06-30"
     assert report["total_appliances"] == 3
-    assert report["total_metric_readings"] == 6
+    assert report["total_metric_readings"] == 18
 
 
 def test_report_empty_range_keeps_appliance_context(tmp_path):
@@ -112,18 +112,31 @@ def test_scheduler_registers_startup_daily_report_job(tmp_path):
     assert job.trigger.run_date > datetime.now(timezone.utc)
 
 
-def test_scheduler_registers_default_home_collection_interval_job(tmp_path):
+def test_scheduler_registers_due_appliance_collection_interval_job(tmp_path):
     from app.scheduler import create_report_scheduler
 
     settings = Settings(
         database_url=f"sqlite:///{tmp_path / 'scheduler-test.db'}",
         default_collection_interval_seconds=7,
+        scheduler_tick_interval_seconds=3,
     )
     scheduler = create_report_scheduler(settings, session_factory=lambda: None)
 
     jobs = scheduler.get_jobs()
-    job = next(item for item in jobs if item.id == "default-home-collection")
+    job = next(item for item in jobs if item.id == "due-appliance-collection")
 
-    assert job.name == "default home metric collection"
-    assert job.kwargs["home_id"] == settings.default_home_id
-    assert job.trigger.interval.total_seconds() == settings.default_collection_interval_seconds
+    assert job.name == "due appliance metric collection"
+    assert "home_id" not in job.kwargs
+    assert job.trigger.interval.total_seconds() == settings.scheduler_tick_interval_seconds
+
+
+def test_scheduler_default_tick_supports_short_demo_intervals(tmp_path):
+    from app.scheduler import create_report_scheduler
+
+    settings = Settings(database_url=f"sqlite:///{tmp_path / 'scheduler-test.db'}")
+    scheduler = create_report_scheduler(settings, session_factory=lambda: None)
+
+    job = next(item for item in scheduler.get_jobs() if item.id == "due-appliance-collection")
+
+    assert settings.scheduler_tick_interval_seconds == 1
+    assert job.trigger.interval.total_seconds() == 1

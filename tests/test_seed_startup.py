@@ -31,7 +31,7 @@ def test_seed_demo_data_is_idempotent(tmp_path):
     assert homes[1].id == 2
     assert homes[1].name == "Weekend Home"
     assert len(appliances) == 5
-    assert len(readings) == 10
+    assert len(readings) == 30
 
 
 def test_startup_seeds_default_home_and_exposes_it(tmp_path):
@@ -65,4 +65,4 @@ def test_startup_seeds_second_home_with_own_demo_data(tmp_path):
     assert appliances_response.status_code == 200
     assert len(appliances_response.json()) == 2
     assert metrics_response.status_code == 200
-    assert len(metrics_response.json()) == 4
+    assert len(metrics_response.json()) == 12

@@ -11,6 +11,7 @@ class Settings:
     default_home_id: int = 1
     default_home_name: str = "Demo Home"
     default_collection_interval_seconds: int = 60
+    scheduler_tick_interval_seconds: int = 1
     startup_report_delay_seconds: int = 60
 
 

@@ -16,10 +16,11 @@ def test_lists_seeded_metrics_for_home(tmp_path):
 
     assert response.status_code == 200
     readings = response.json()
-    assert len(readings) == 6
+    assert len(readings) == 18
     assert "id" not in readings[0]
     assert "metric_reading_id" in readings[0]
     assert readings[0]["home_id"] == 1
+    assert readings[0]["appliance_display_name"]
     assert "power_watts" in readings[0]
     assert "temperature_celsius" in readings[0]
     assert "operational_state" in readings[0]
@@ -45,7 +46,7 @@ def test_filters_metrics_by_appliance_id(tmp_path):
 
     assert response.status_code == 200
     readings = response.json()
-    assert len(readings) == 2
+    assert len(readings) == 6
     assert all(reading["appliance_id"] == 1 for reading in readings)
 
 
@@ -55,6 +56,10 @@ def test_filters_metrics_by_inclusive_date_range(tmp_path):
             "/homes/1/metrics",
             params={"start_date": "2026-06-30", "end_date": "2026-06-30"},
         )
+        single_day = client.get(
+            "/homes/1/metrics",
+            params={"start_date": "2026-06-29", "end_date": "2026-06-29"},
+        )
         excluded = client.get(
             "/homes/1/metrics",
             params={"start_date": "2026-07-01", "end_date": "2026-07-01"},
@@ -62,6 +67,8 @@ def test_filters_metrics_by_inclusive_date_range(tmp_path):
 
     assert included.status_code == 200
     assert len(included.json()) == 6
+    assert single_day.status_code == 200
+    assert len(single_day.json()) == 6
     assert excluded.status_code == 200
     assert excluded.json() == []
 
