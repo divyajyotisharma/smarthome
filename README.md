@@ -31,6 +31,10 @@ Swagger UI:
 
 `http://127.0.0.1:8000/docs`
 
+## Reviewer Scenario Guide
+
+Use `context/reviewer-test-scenarios.md` before or alongside Swagger testing. It explains what each assignment scenario is proving, which APIs to call, expected responses, common failure cases, and the guardrails built into the implementation.
+
 ## Run Tests
 
 ```bash
@@ -44,8 +48,6 @@ Delete `data/smarthome.db` and restart the app.
 The backend recreates tables and reseeds demo data on startup only when it is missing.
 
 ## Swagger Review Flow
-
-For a scenario-based review checklist, use `context/reviewer-test-scenarios.md`. It maps each assignment capability to the API calls, expected results, common failure cases, and guardrails.
 
 1. Open `http://127.0.0.1:8000/docs`
 2. Run `GET /health` to confirm the API is running.
