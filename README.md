@@ -45,6 +45,8 @@ The backend recreates tables and reseeds demo data on startup only when it is mi
 
 ## Swagger Review Flow
 
+For a scenario-based review checklist, use `context/reviewer-test-scenarios.md`. It maps each assignment capability to the API calls, expected results, common failure cases, and guardrails.
+
 1. Open `http://127.0.0.1:8000/docs`
 2. Run `GET /health` to confirm the API is running.
 3. Run `GET /homes/1` to view the seeded demo home/client context.
