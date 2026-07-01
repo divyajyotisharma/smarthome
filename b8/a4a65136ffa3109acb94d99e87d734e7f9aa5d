@@ -1,0 +1,19 @@
+context/README.md
+  s_cc3bdaee2f1d6e::t_a3edba15da99ed 1,3,5,7,9-17,19,21,23-33,35,37-46,48,50,52-53,56,58-59,62
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "b8a4a65136ffa3109acb94d99e87d734e7f9aa5d",
+  "prompts": {},
+  "sessions": {
+    "s_cc3bdaee2f1d6e": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1e8d-e02f-76c2-9348-385f19851620",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Divy <divysha3@cisco.com>"
+    }
+  }
+}
