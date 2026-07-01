@@ -1,0 +1,29 @@
+app/schemas/core.py
+  s_2f76549e3a4c0a::t_44397a5a9a7ff3 82
+tests/test_metrics.py
+  s_2f76549e3a4c0a::t_369eccda8a1b8b 19,49,69,71
+README.md
+  s_2f76549e3a4c0a::t_32d482d70b025d 70,81,86,89
+tests/test_reports.py
+  s_2f76549e3a4c0a::t_235dac1958c6e7 33,35-38,46,52,55
+app/models/core.py
+  s_2f76549e3a4c0a::t_d57dcde425dfe1 90-95
+tests/test_seed_startup.py
+  s_2f76549e3a4c0a::t_68b17d66989b28 34,68
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "7859a423f01d30fcf9e1854104d1f1737f7b01cb",
+  "prompts": {},
+  "sessions": {
+    "s_2f76549e3a4c0a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1dc9-d5fd-76b3-a73e-1c29b8d615fd",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Divy <divysha3@cisco.com>"
+    }
+  }
+}
