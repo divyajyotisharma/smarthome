@@ -1,0 +1,30 @@
+app/services/appliances.py
+  s_53f6451b3b2ea8::t_11f6a95758a6b6 7,59-67,101,103-104,110-157
+  s_53f6451b3b2ea8::t_c9fdac43284cad 158-159
+tests/test_appliances.py
+  s_53f6451b3b2ea8::t_990f20be33ab04 60-87,122-142
+README.md
+  s_53f6451b3b2ea8::t_b075907789f09c 66-67,73,84,91,95
+context/features/03-appliance-management.md
+  s_53f6451b3b2ea8::t_b7c0a9cc9e3c66 18,82,87,158,164,183-184,213-221,239-240,272,276
+context/features/05-historical-metrics.md
+  s_53f6451b3b2ea8::t_ab605c377d5e8c 20,36,124,150-158,221
+context/progress-tracker.md
+  s_53f6451b3b2ea8::t_2a859967148b51 11,38-39,43,47,72-73,90
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "62e7468bf7dd2f485b5c7f0da5f3ce338f9c06ab",
+  "prompts": {},
+  "sessions": {
+    "s_53f6451b3b2ea8": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1e55-5f26-7013-9358-53f5283abedd",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Divy <divysha3@cisco.com>"
+    }
+  }
+}
